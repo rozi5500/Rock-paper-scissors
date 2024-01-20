@@ -1,3 +1,9 @@
+const rockBtn = document.querySelector('button[id="rock"]')
+const paperBtn = document.querySelector('button[id="paper"]')
+const scissorsBtn = document.querySelector('button[id="scissors"]')
+const results = document.querySelector('div[id="results"]')
+const currentScore = document.querySelector('div[id="round-info"]')
+
 function getComputerChoice() {
   const result = Math.floor(Math.random() * 3 + 1)
 
@@ -13,47 +19,63 @@ function getComputerChoice() {
   }
 }
 
-const computerChoice = getComputerChoice();
+let playerScore = 0;
+let computerScore = 0;
 
 function oneRoundGame(computerChoice, playerChoice) {
-  playerChoice = playerChoice.toLowerCase()
-  const capitalizedChoice = playerChoice[0].toUpperCase() + playerChoice.slice(1)
+  const rock = 'Rock';
+  const paper = 'Paper';
+  const scissors = 'Scissors';
 
-  if (
-    (playerChoice === 'rock' && computerChoice === 'Paper')
-    ||
-    (playerChoice === 'scissors' && computerChoice === 'Rock')
-    ||
-    (playerChoice === 'paper' && computerChoice === 'Scissors')
-  ) {
-    return {status: false, playerChoice}
+  if (playerScore > 4) {
+    results.innerText = `User wins`
+    return;
+  }
+  if (computerScore > 4) {
+    results.innerText = `Computer wins`
+    return;
+  }
+
+  if (playerChoice === computerChoice) {
+    results.innerText = 'It\'s tie';
   }
 
   if (
-    (playerChoice === 'rock' && computerChoice === 'Scissors')
+    (playerChoice === rock && computerChoice === paper)
     ||
-    (playerChoice === 'scissors' && computerChoice === 'Paper')
+    (playerChoice === scissors && computerChoice === rock)
     ||
-    (playerChoice === 'paper' && computerChoice === 'Rock')
+    (playerChoice === paper && computerChoice === scissors)
   ) {
-    return {status: true, playerChoice}
+    playerScore++
+    results.innerText = `${playerChoice} beats ${computerChoice}`
   }
 
-  if (playerChoice === computerChoice.toLowerCase()) return 'Draw';
+  if (
+    (playerChoice === rock && computerChoice === scissors)
+    ||
+    (playerChoice === scissors && computerChoice === paper)
+    ||
+    (playerChoice === paper && computerChoice === rock)
+  ) {
+    computerScore++;
+    results.innerText = `${computerChoice} beats ${playerChoice}`
+  }
+
+  currentScore.innerText = `\n User's score: ${playerScore} \n Computer's score: ${computerScore}`
 }
 
 function game() {
-  let playerScore = 0;
-  let computerScore = 0;
+  rockBtn.addEventListener('click', () => {
+    oneRoundGame(getComputerChoice(), 'Rock')
+  })
+  paperBtn.addEventListener('click', () => {
+    oneRoundGame(getComputerChoice(), 'Paper')
+  })
+  scissorsBtn.addEventListener('click', () => {
+   oneRoundGame(getComputerChoice(), 'Scissors');
+  })
 
-  for (let i = 0; i < 5; i++) {
-    const result = oneRoundGame(computerChoice, prompt('Rock, Paper or Scissors?: '));
-    result.status === false ? computerScore++ : playerScore++;
-  }
-
-  if (playerScore > computerScore) console.log(`You win with score of ${playerScore}:${computerScore}`)
-  if (playerScore < computerScore) console.log(`You lost with score of ${playerScore}:${computerScore}`)
-  if (playerScore === computerScore) console.log('Draw')
 }
 
 
